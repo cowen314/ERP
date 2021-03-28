@@ -88,8 +88,8 @@ int main(int argc, char * argv[])
   if (argc > 2) // write the processed image files to disk
 	  writefiles = true;
 
-  inputFile = inputDirectory + "rawavg.nrrd";
-  inputLabels = inputDirectory + "aseg.nrrd";
+  inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
+  inputLabels = inputDirectory + "aseg.mgh";
   	
   // Create vectors of label names and label values
   std::vector<std::string> labelNames;
