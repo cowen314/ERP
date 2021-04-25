@@ -94,7 +94,11 @@ int main(int argc, char * argv[])
   if (argc > 3) { 
     // assume that the user wants to process a single arbitrarily defined region of interest
     processSingleAbritraryRoi = true;
-    std::cout << "Processing label with ID = 1 only" << std::endl;
+    std::cout << "Processing arbitrary ROI. This ROI should have label ID = 1." << std::endl;
+    labelNames.reserve(1); //storage for 1 label
+    labelNames.push_back("ArbitraryROI");
+    labelValues.reserve(1);  //storage for 1 value
+    labelValues.push_back(1);  // TODO take the ROI label ID from the third argument. That way, the user can select ANY segment ID. This would be useful in case they want to reprocess 1 single region.
   }
   else {
     // Create vectors of label names and label values
@@ -108,7 +112,7 @@ int main(int argc, char * argv[])
     labelValues.push_back(RightHippocampus);
     labelValues.push_back(LeftThalamus);
     labelValues.push_back(RightThalamus);
-    std::cout << "Processing "
+    std::cout << "Processing LHip, RHip, LThal, and RThal." << std::endl;
   }
 
   inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
