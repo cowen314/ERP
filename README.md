@@ -21,3 +21,24 @@ Epilepsy Radiomics Processing.
 ### MGH/MHZ files
 In order to use the files that come directly from Freesurfer in MGH or MHZ format is is necessary to have Git installed in the computer at the time of the ITK build.
 Also, the Module_MGHIO must be selected. Otherwise, the program might cause some problems when running. 
+
+
+### Detailed build instructions
+
+These instuctions were written specifically for an Ubuntu machine, but the process should be similar on other platforms.
+
+1. Download and install CMake
+    1. `apt-get install cmake`
+1. Download, configure, build, and install VTK
+    1. [Download the VTK source code](https://vtk.org/download/)
+    1. `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory)
+        1. this step failed for me the first time I ran it because an OpenGL implementation needed to be on the system. [This post](https://stackoverflow.com/questions/31170869/cmake-could-not-find-opengl-in-ubuntu) was helpful.
+    1. `cmake --build vtk-bin` to build VTK 
+1. Download, configure, build, and install ITK
+    1. [Download the ITK source code](https://itk.org/download/)
+    1. `cmake -D Module_MGHIO:BOOL=ON -D Module_ITKVtkGlue:BOOL=ON -S itk-src/ -B itk-bin/` to configure VTK (where `itk-src` is the directory that downloaded VTK source code was placed in, and `itk-bin` is an arbitrary directory)
+        1. Note that this step configures ITK with MGHIO support (which is needed to read in the Freesurfer MGH/MGZ files) and VTK Glue support  
+1. Clone, configure, and build ERP
+    1. `git clone https://github.com/cowen314/ERP.git`
+    1. `cmake -S ERP -B erp-bin`
+    1. `cmake --build erp-bin`
