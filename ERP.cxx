@@ -41,6 +41,7 @@ int main(int argc, char * argv[])
   float sum=0, mean=0, factor=1;  // used for structure mean signal calculation for scaling
   bool found; // used for neighborhood generation
   bool writefiles = false;
+  bool processSingleAbritraryRoi = false;
 
   // image data and label types
   typedef  unsigned short  int						PixelType;
@@ -88,24 +89,31 @@ int main(int argc, char * argv[])
   if (argc > 2) // write the processed image files to disk
 	  writefiles = true;
 
+  std::vector<std::string> labelNames;
+  std::vector<unsigned char> labelValues;
+  if (argc > 3) { 
+    // assume that the user wants to process a single arbitrarily defined region of interest
+    processSingleAbritraryRoi = true;
+    std::cout << "Processing label with ID = 1 only" << std::endl;
+  }
+  else {
+    // Create vectors of label names and label values
+    labelNames.reserve(4); //storage for four labels
+    labelNames.push_back("LHip");
+    labelNames.push_back("RHip");
+    labelNames.push_back("LThal");
+    labelNames.push_back("RThal");
+    labelValues.reserve(4);  //storage for four values
+    labelValues.push_back(LeftHippocampus);
+    labelValues.push_back(RightHippocampus);
+    labelValues.push_back(LeftThalamus);
+    labelValues.push_back(RightThalamus);
+    std::cout << "Processing "
+  }
+
   inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
   inputLabels = inputDirectory + "aseg.mgh";
   	
-  // Create vectors of label names and label values
-  std::vector<std::string> labelNames;
-  labelNames.reserve(4); //storage for four labels
-  labelNames.push_back("LHip");
-  labelNames.push_back("RHip");
-  labelNames.push_back("LThal");
-  labelNames.push_back("RThal");
-
-  std::vector<unsigned char> labelValues;
-  labelValues.reserve(4);  //storage for four values
-  labelValues.push_back(LeftHippocampus);
-  labelValues.push_back(RightHippocampus);
-  labelValues.push_back(LeftThalamus);
-  labelValues.push_back(RightThalamus);
-
   // Create iterators for the vectors.  We will iterate over the structures when doing the feature extraction
   std::vector<std::string>::iterator labelNamesIterator;
   std::vector<unsigned char>::iterator labelValuesIterator;
