@@ -221,7 +221,7 @@ int main(int argc, char * argv[])
   BinaryImageToStatisticsLabelMapFilterType::Pointer BinaryToStatisticsFilter = BinaryImageToStatisticsLabelMapFilterType::New();
   BinaryToStatisticsFilter->SetInput1(medianFilter->GetOutput());
   BinaryToStatisticsFilter->SetInput2(imageReader->GetOutput());
-  BinaryToStatisticsFilter->SetComputeHistogram(TRUE);
+  BinaryToStatisticsFilter->SetComputeHistogram(true);
   BinaryToStatisticsFilter->SetCoordinateTolerance(0.01);
   BinaryImageToStatisticsLabelMapFilterType::OutputImageType::LabelObjectType* StatlabelObject;
 

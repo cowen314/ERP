@@ -29,16 +29,20 @@ These instuctions were written specifically for an Ubuntu machine, but the proce
 
 1. Download and install CMake
     1. `apt-get install cmake`
-1. Download, configure, build, and install VTK
+1. Download, configure, and build VTK
     1. [Download the VTK source code](https://vtk.org/download/)
-    1. `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory)
+    1. Run `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory to place VTK makefiles and binaries in)
         1. this step failed for me the first time I ran it because an OpenGL implementation needed to be on the system. [This post](https://stackoverflow.com/questions/31170869/cmake-could-not-find-opengl-in-ubuntu) was helpful.
-    1. `cmake --build vtk-bin` to build VTK 
-1. Download, configure, build, and install ITK
+    1. Run `cmake --build vtk-bin` to build VTK 
+1. Download, configure, and build ITK
     1. [Download the ITK source code](https://itk.org/download/)
-    1. `cmake -D Module_MGHIO:BOOL=ON -D Module_ITKVtkGlue:BOOL=ON -S itk-src/ -B itk-bin/` to configure VTK (where `itk-src` is the directory that downloaded VTK source code was placed in, and `itk-bin` is an arbitrary directory)
+    1. Run `cmake -D Module_MGHIO:BOOL=ON -D Module_ITKVtkGlue:BOOL=ON -D VTK_DIR:PATH=/home/cowen/vtk-bin/ -S itk-src/ -B itk-bin/` to configure VTK (where `itk-src` is the directory that downloaded VTK source code was placed in, and `itk-bin` is an arbitrary directory to place ITK makefiles and binaries in)
         1. Note that this step configures ITK with MGHIO support (which is needed to read in the Freesurfer MGH/MGZ files) and VTK Glue support  
+        1. Change `/home/cowen/vtk-bin/` to wherever `vtk-bin` is (from the prior step)
 1. Clone, configure, and build ERP
-    1. `git clone https://github.com/cowen314/ERP.git`
-    1. `cmake -S ERP -B erp-bin`
-    1. `cmake --build erp-bin`
+    1. Run `git clone https://github.com/cowen314/ERP.git` to clone the repo
+    1. Run `cmake -D ITK_DIR:PATH=/home/cowen/itk-bin -S ERP -B erp-bin/` to configure the ERP app
+      1. Change `/home/cowen/itk-bin` to wherever `itk-bin` is (from the prior step) 
+    1. Run `cmake --build erp-bin` to build the ERP tool. 
+1. Run ERP
+    1. Run `erp-bin/ERP rawavg.mgh aseg.mgh`, where `rawavg.mgh aseg.mgh` are an MRI volume and a segmentation volume, respectively.
