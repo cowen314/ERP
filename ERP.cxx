@@ -42,6 +42,7 @@ int main(int argc, char * argv[])
   bool found; // used for neighborhood generation
   bool writefiles = false;
   bool processSingleAbritraryRoi = false;
+  int roiSegmentId = 0;
 
   // image data and label types
   typedef  unsigned short  int						PixelType;
@@ -82,7 +83,7 @@ int main(int argc, char * argv[])
   {
   	std::cout << "Input a directory to process" << std::endl;
 	std::cout << "The image and label files must be in the directory and have the names:" << std::endl;
-	std::cout << "rawavg.nrrd and aseg.nrrd" << std::endl;
+	std::cout << "rawavg.mgh and either aseg.mgh (if running all predefined segments) or roi.mgh (if running only a single segment)" << std::endl;
 	exit(1);
   }
 
@@ -94,11 +95,12 @@ int main(int argc, char * argv[])
   if (argc > 3) { 
     // assume that the user wants to process a single arbitrarily defined region of interest
     processSingleAbritraryRoi = true;
-    std::cout << "Processing arbitrary ROI. This ROI should have label ID = 1." << std::endl;
+    std::cout << "Processing arbitrary ROI." << std::endl;
+    roiSegmentId = atoi(argc[3]);
     labelNames.reserve(1); //storage for 1 label
     labelNames.push_back("ArbitraryROI");
     labelValues.reserve(1);  //storage for 1 value
-    labelValues.push_back(1);  // TODO take the ROI label ID from the third argument. That way, the user can select ANY segment ID. This would be useful in case they want to reprocess 1 single region.
+    labelValues.push_back(roiSegmentId);
   }
   else {
     // Create vectors of label names and label values
@@ -116,7 +118,10 @@ int main(int argc, char * argv[])
   }
 
   inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
-  inputLabels = inputDirectory + "aseg.mgh";
+  if(processSingleAbritraryRoi)
+    inputLabels = inputDirectory + "roi.mgh";
+  else
+    inputLabels = inputDirectory + "aseg.mgh";
   	
   // Create iterators for the vectors.  We will iterate over the structures when doing the feature extraction
   std::vector<std::string>::iterator labelNamesIterator;
