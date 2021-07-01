@@ -11,7 +11,7 @@ def process_batch(subjects_directory: Path, output_directory: Path, segment_ids:
     """process a batch of patients all at once
 
     Args:
-        subjects_directory (Path): directory that subject data resides in
+        subjects_directory (Path): directory with a bunch of subdirectories, one subdirectory for each subject
         output_directory (Path): directory for the ERP outputs
         segment_ids (List[int]): the segment IDs to generate features for
 
