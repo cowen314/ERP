@@ -22,7 +22,7 @@ def process_batch(subjects_directory: Path, output_directory: Path, segment_ids:
     results = []
     for folder in subjects_directory:
         # TODO finish this
-        msg, success = process_single(folder, output_directory)
+        msg, success = process_single(folder / "mri", output_directory)
         result = f"Processed {folder}, ERP output:\n\n{msg}"
         print(result)
         results += result
