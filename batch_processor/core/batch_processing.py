@@ -33,25 +33,42 @@ def process_batch(subjects_directory: Path, output_directory: Path, segment_ids:
     return results, errors
 
 
-def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int], output_images: bool=False) -> Tuple[str, bool]:
+def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int]) -> Tuple[str, bool]:
     """process a single patient
 
     Args:
         input_dir (Path): directory with patient data
         output_dir (Path): directory to put the ERP outputs in
+        segment_ids (List[int]): the segment ids to process with ERP
 
     Returns:
         str, bool: status message, status bool (True = pass, False = fail)
     """
+
+    for id in segment_ids:
+        segment_output_dir = output_dir / input_dir.parent.name / "segment-" / id
+        msg, success = call_erp(input_dir, segment_output_dir, id)
+        
+
+
+
+def call_erp(input_dir: Path, output_dir: Path, segment_id: List[int]) -> Tuple[str, bool]:
+    """call the ERP executable via command line, processing a single ROI / segment ID. If the signature of the ERP app changes, this function will probably need to be updated.
+
+    Args:
+        input_dir (Path): path to call the ERP app in
+        output_dir (Path): location to place the ERP output files in
+        segment_id (int): a Freesurfer segment ID
+
+    Returns:
+        Tuple[str, bool]: ERP status message; a bool indicating whether ERP ran successfully or not (true = no errors, false = errors)
+    """
     # for readiability, split things out into a bunch of variables
-    for i in range(len(segment_ids)):
-        segment_ids[i] = str(segment_ids[i])
-    segments_arg = ",".join(segment_ids)
-    output_images_arg = '1' if output_images else '0'
+    # output_images_arg = '1' if output_images else '0'
     erp_cmd = [
         ERP_EXE_NAME,
-        segments_arg,
-        output_images_arg
+        "1",
+        segment_id
     ]
     
     ## capture the output, deal with it later
@@ -64,4 +81,17 @@ def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int], ou
     po = subprocess.run(erp_cmd, capture_output=False, cwd=input_dir)  # TODO send output to terminal AND capture?
     if po.returncode > 0:
         return f"Error while processing '{str(input_dir.resolve())}'", False
-    return f"Processed '{str(input_dir.resolve())}' successfully", True
+    else:
+        # the ERP tool worked as expected, move outputs
+        move_all_files_with_pattern(input_dir, output_dir, "*_features.csv")
+        return f"Processed '{str(input_dir.resolve())}' successfully", True
+
+
+def move_all_files_with_pattern(original_dir: Path, new_dir: Path, pattern: str) -> List[Path]:
+    if not new_dir.exists():
+        new_dir.mkdir(parents=True)
+    output_files = original_dir.glob(pattern)
+    output_files_moved = []
+    for ofile in output_files:
+        output_files_moved.append(ofile.rename(new_dir / ofile.name))
+    return output_files_moved
