@@ -1,3 +1,4 @@
+from os import error
 import subprocess
 from pathlib import Path
 from typing import List, Tuple
@@ -45,11 +46,17 @@ def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int]) ->
         str, bool: status message, status bool (True = pass, False = fail)
     """
 
+    errors = []
     for id in segment_ids:
-        segment_output_dir = output_dir / input_dir.parent.name / "segment-" / id
+        segment_output_dir = output_dir / input_dir.parent.name / "segment-" / str(id)
         msg, success = call_erp(input_dir, segment_output_dir, id)
-        
-
+        if not success:
+            errors.append(f"Segment {id} failed: '{msg}'")
+    # FIXME if this tools needs to grow, pass a list of errors out of this function, rather than a formatted string. Keep the formatting and the ERP-call logic separate.
+    if len(errors) > 0:
+        errors_formatted = '\n\t'.join(errors)
+        return f"Some failures occurred while processing: {errors_formatted}"
+    return "Processed successfully", True
 
 
 def call_erp(input_dir: Path, output_dir: Path, segment_id: List[int]) -> Tuple[str, bool]:
@@ -68,7 +75,7 @@ def call_erp(input_dir: Path, output_dir: Path, segment_id: List[int]) -> Tuple[
     erp_cmd = [
         ERP_EXE_NAME,
         "1",
-        segment_id
+        str(segment_id)
     ]
     
     ## capture the output, deal with it later
