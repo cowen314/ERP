@@ -7,24 +7,23 @@ from typing import List, Tuple
 ERP_EXE_NAME = "echo"  # for use when testing. This'll just print the parameters to stdout. 
 
 
-def process_batch(subjects_directory: Path, output_directory: Path, segment_ids: List[int]) -> Tuple[List[str], List[str]]:
+def process_batch(subjects_directory: Path, output_directory: Path, segment_ids: List[int], segmentation_volume_rel_path: str) -> Tuple[List[str], List[str]]:
     """process a batch of patients all at once
 
     Args:
         subjects_directory (Path): directory with a bunch of subdirectories, one subdirectory for each subject
         output_directory (Path): directory for the ERP outputs
         segment_ids (List[int]): the segment IDs to generate features for
+        segmentation_volume_rel_path (str): a relative path to the segmentation volume (relative to the base directory for each patient)
 
     Returns:
         List[str], List[str]: Results (1 item for each subject), errors (1 item for each subject that ERP did not successfully process)
     """
     errors = []
     results = []
-    for item in subjects_directory.glob("*"):
-        if item.is_file:
-            continue  # skip regular files, we only care about directories
-        msg, success = process_single(item / "mri", output_directory)
-        result = f"Processed {item}, {msg}"
+    for patient_dir in all_patient_dirs(subjects_directory):  # TODO test generator
+        msg, success = process_single(patient_dir / "mri", output_directory, segment_ids, patient_dir / segmentation_volume_rel_path)
+        result = f"Processed {patient_dir}, {msg}"
         print(result)
         results += result
         if not success:
@@ -33,7 +32,7 @@ def process_batch(subjects_directory: Path, output_directory: Path, segment_ids:
     return results, errors
 
 
-def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int]) -> Tuple[str, bool]:
+def process_single(input_dir: Path, output_dir: Path, segment_ids: List[int], segmentation_volume: Path) -> Tuple[str, bool]:
     """process a single patient
 
     Args:
@@ -101,3 +100,10 @@ def move_all_files_with_pattern(original_dir: Path, new_dir: Path, pattern: str)
     for ofile in output_files:
         output_files_moved.append(ofile.rename(new_dir / ofile.name))
     return output_files_moved
+
+# TODO write a generator that returns a sequence of folders in the patient directory 
+def all_patient_dirs(base: Path):
+    for item in base.glob("*"):
+        if item.is_dir:
+            yield item
+
