@@ -22,10 +22,11 @@ def process_batch(subjects_directory: Path, output_directory: Path, segment_ids:
     """
     errors = []
     results = []
-    for folder in subjects_directory:
-        # TODO finish this
-        msg, success = process_single(folder / "mri", output_directory)
-        result = f"Processed {folder}, ERP output:\n\n{msg}"
+    for item in subjects_directory.glob("*"):
+        if item.is_file:
+            continue  # skip regular files, we only care about directories
+        msg, success = process_single(item / "mri", output_directory)
+        result = f"Processed {item}, {msg}"
         print(result)
         results += result
         if not success:
