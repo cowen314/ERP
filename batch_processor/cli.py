@@ -35,4 +35,4 @@ errors = []
 results, errors = generate_volumes_from_label_batch(args.label, args.base_image, args.patient_directory, args.label.name + ".mgh")
 if len(errors) > 0:
     exit(f"{len(errors)} occurred while generating label files.")
-results, errors = process_batch(args.label, )
+results, errors = process_batch(args.label, args.output_directory, segments)
