@@ -1,8 +1,10 @@
 import argparse
 from batch_processor.core.batch_processing import process_batch, process_single
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
 parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
+parser.add_argument("", help="Path to FreeSurfer segmentation volume")
+# TODO next step (2021-07-28): figure out how the user and application will handle manually traced regions (add a mode switch?)
 parser.add_argument("patient_directory", help="The base directory in which patient data is stored. All patients found in this directory will be processed.")
 parser.add_argument("output_directory", help="A directory to place ERP outputs into.")
 args = parser.parse_args()

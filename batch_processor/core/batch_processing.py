@@ -3,8 +3,6 @@ import subprocess
 from pathlib import Path
 from typing import List, Tuple
 
-# TODO handle labels
-
 # ERP_EXE_NAME = "ERP"
 ERP_EXE_NAME = "echo"  # for use when testing. This'll just print the parameters to stdout. 
 
