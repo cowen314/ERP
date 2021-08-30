@@ -29,6 +29,7 @@
 #define RightHippocampus 53
 #define LeftThalamus 10
 #define RightThalamus 49
+// #define LateralOrbitalFrontalCortex 
 
 int main(int argc, char * argv[])
 {
@@ -82,21 +83,20 @@ int main(int argc, char * argv[])
   else
   {
   	std::cout << "Input a directory to process" << std::endl;
-	std::cout << "The image and label files must be in the directory and have the names:" << std::endl;
-	std::cout << "rawavg.mgh and either aseg.mgh (if running all predefined segments) or roi.mgh (if running only a single segment)" << std::endl;
-	exit(1);
+    std::cout << "The image and label files must be in the directory and have the names:" << std::endl;
+    std::cout << "rawavg.mgh and either aseg.mgh (if running all predefined segments) or roi.mgh (if running only a single segment)" << std::endl;
+    exit(1);
   }
-
-  if (argc > 2) // write the processed image files to disk
-	  writefiles = true;
 
   std::vector<std::string> labelNames;
   std::vector<unsigned char> labelValues;
-  if (argc > 3) { 
-    // assume that the user wants to process a single arbitrarily defined region of interest
+
+  if (argc > 2) // assume that the user wants to process a single arbitrarily defined region of interest
+  { 
     processSingleAbritraryRoi = true;
-    std::cout << "Processing arbitrary ROI." << std::endl;
-    roiSegmentId = atoi(argc[3]);
+    println("Found at least two arguments. The application will assume that the second argument is a segment ID to process.")
+    roiSegmentId = atoi(argv[2]);
+    printf("Second argument is %d. Generating features for segmentID=%d.\n", roiSegmentId);
     labelNames.reserve(1); //storage for 1 label
     labelNames.push_back("ArbitraryROI");
     labelValues.reserve(1);  //storage for 1 value
@@ -117,6 +117,12 @@ int main(int argc, char * argv[])
     std::cout << "Processing LHip, RHip, LThal, and RThal." << std::endl;
   }
 
+  if (argc > 3) // write the processed image files to disk
+  {
+    println("Found at least 3 arguments. Processed image files will be written to disk.")
+    writefiles = true;
+  }
+	  
   inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
   if(processSingleAbritraryRoi)
     inputLabels = inputDirectory + "roi.mgh";
