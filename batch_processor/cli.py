@@ -4,6 +4,17 @@ from os import error
 from core.batch_processing import process_batch, process_single
 from core.custom_label_handling import generate_volumes_from_label_batch
 
+'''
+Generate features for several patients with a single command
+
+Inputs:
+- A directory with the MRIs and segmentations of many patients (standard FreeSurfer format)
+- A list of segment IDs to generate features for **OR** a label file, along with the MRI that the label was originally drawn on
+
+Output:
+- CSVs with features
+'''
+
 parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
 parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 
