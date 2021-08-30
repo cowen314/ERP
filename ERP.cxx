@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
     processSingleAbritraryRoi = true;
     printf("Found at least two arguments. The application will assume that the second argument is a segment ID to process.\n");
     roiSegmentId = atoi(argv[2]);
-    printf("Second argument is %d. Generating features for segmentID=%d.\n", roiSegmentId);
+    printf("Generating features for segmentID=%d.\n", roiSegmentId);
     labelNames.reserve(1); //storage for 1 label
     labelNames.push_back("ArbitraryROI");
     labelValues.reserve(1);  //storage for 1 value
@@ -117,17 +117,21 @@ int main(int argc, char * argv[])
     std::cout << "Processing LHip, RHip, LThal, and RThal." << std::endl;
   }
 
-  if (argc > 3) // write the processed image files to disk
+  if (argc > 3) // use alternate aseg name
   {
-    printf("Found at least 3 arguments. Processed image files will be written to disk.\n");
+    printf("Found at least 3 arguments. Will use the 3rd argument ('%s') as the name for the aseg file (instead of the default 'aseg.mgh'\n", argv[3]);
+    inputLabels = inputDirectory + argv[3];
+  }
+  else
+    inputLabels = inputDirectory + "aseg.mgh";
+
+  if (argc > 4) // write the processed image files to disk
+  {
+    printf("Found at least 4 arguments. Processed image files will be written to disk.\n");
     writefiles = true;
   }
 	  
   inputFile = inputDirectory + "rawavg.mgh";  // the file suffix hints to ITK the type of file to read
-  if(processSingleAbritraryRoi)
-    inputLabels = inputDirectory + "roi.mgh";
-  else
-    inputLabels = inputDirectory + "aseg.mgh";
   	
   // Create iterators for the vectors.  We will iterate over the structures when doing the feature extraction
   std::vector<std::string>::iterator labelNamesIterator;
