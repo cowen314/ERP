@@ -5,6 +5,20 @@ Epilepsy Radiomics Processing.
 
 This tool extracts features from MRI images. The images must be in the MGH/MGZ (Freesurfer) format.
 
+## Using the tool
+
+* The ERP tool only needs the path to a folder containing a segmentation file and an MRI. If no other arguments are provided, ERP will generate features for the left hippocampus (segment ID 17), right hippocampus (53), left thalamus (10), and right thalamus (49).
+* Optionally, a segment ID may be provided as the second argument. In this case, features will be extracted from the segment ID provided as opposed to the 4 regions listed above.
+* Optionally, a segment ID and the name of an alternate segmentation file can be provided (as the second and third arguments, respectively). In this case, features will be extracted from the segment ID provided AND the alternate segmentation volume will be used instead of aseg.mgh.
+* If there are more than 3 arguments, everything from the last bullet will happen, and processed image files will be written to disk.
+
+### Examples
+
+1. `./ERP ../erp-data/bert/` will extract features from `../erp-data/bert/rawavg.mgh` using `../erp-data/bert/aseg.mgh`. Features will be extracted from 4 regions; the left hippocampus (segment ID 17), right hippocampus (53), left thalamus (10), and right thalamus (49).
+1. `./ERP ../erp-data/bert/ 17` will extract features from `../erp-data/bert/rawavg.mgh` using `../erp-data/bert/aseg.mgh`. Features will extracted from the from region specified (in this case segment ID 17, the left hippocampus).
+1. `./ERP ../erp-data/bert/ 1 roi.mgh` will extract features from `../erp-data/bert/rawavg.mgh` using `../erp-data/bert/roi.mgh` instead of `../erp-data/bert/aseg.mgh`. Features will be extracted from segment ID 1.
+1. `./ERP ../erp-data/bert/ 1 roi.mgh files` will do everything above, and processed image files will be written to disk.
+
 ## Build Instructions
 
 These instuctions were written specifically for an Ubuntu machine, but the process should be similar on other platforms.
@@ -27,8 +41,7 @@ These instuctions were written specifically for an Ubuntu machine, but the proce
     1. Run `git clone https://github.com/cowen314/ERP.git` to clone the repo
     1. Run `cmake -D ITK_DIR:PATH=/home/cowen/itk-bin -S ERP -B erp-bin/` to configure the ERP tool. `/home/cowen/itk-bin` should be wherever `itk-bin` is (from "*Download, configure, and build ITK*"). 
     1. Run `cmake --build erp-bin` to build the ERP tool. 
-1. Run ERP
-    1. Run `erp-bin/ERP ../data`, where `../data` includes an MRI volume named `rawavg.mgh` and a segmentation volume named `aseg.mgh`.
+1. Run ERP. See "Using the tool" for more information.
 
 ## Legacy Build/Tooling Instructions
 
