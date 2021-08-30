@@ -25,11 +25,10 @@ These instuctions were written specifically for an Ubuntu machine, but the proce
         1. `VTK_DIR:PATH=/home/cowen/vtk-bin/` tells ITK where to look for VTK. VTK is required because the ITKVTKGlue module depends on it. Change `/home/cowen/vtk-bin/` to wherever `vtk-bin` is (from the prior step).
 1. Clone, configure, and build ERP
     1. Run `git clone https://github.com/cowen314/ERP.git` to clone the repo
-    1. Run `cmake -D ITK_DIR:PATH=/home/cowen/itk-bin -S ERP -B erp-bin/` to configure the ERP tool
-      1. Change `/home/cowen/itk-bin` to wherever `itk-bin` is (from the prior step) 
+    1. Run `cmake -D ITK_DIR:PATH=/home/cowen/itk-bin -S ERP -B erp-bin/` to configure the ERP tool. `/home/cowen/itk-bin` should be wherever `itk-bin` is (from "*Download, configure, and build ITK*"). 
     1. Run `cmake --build erp-bin` to build the ERP tool. 
 1. Run ERP
-    1. Run `erp-bin/ERP rawavg.mgh aseg.mgh`, where `rawavg.mgh aseg.mgh` are an MRI volume and a segmentation volume, respectively.
+    1. Run `erp-bin/ERP ../data`, where `../data` includes an MRI volume named `rawavg.mgh` and a segmentation volume named `aseg.mgh`.
 
 ## Legacy Build/Tooling Instructions
 

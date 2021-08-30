@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
   if (argc > 2) // assume that the user wants to process a single arbitrarily defined region of interest
   { 
     processSingleAbritraryRoi = true;
-    println("Found at least two arguments. The application will assume that the second argument is a segment ID to process.")
+    printf("Found at least two arguments. The application will assume that the second argument is a segment ID to process.\n");
     roiSegmentId = atoi(argv[2]);
     printf("Second argument is %d. Generating features for segmentID=%d.\n", roiSegmentId);
     labelNames.reserve(1); //storage for 1 label
@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 
   if (argc > 3) // write the processed image files to disk
   {
-    println("Found at least 3 arguments. Processed image files will be written to disk.")
+    printf("Found at least 3 arguments. Processed image files will be written to disk.\n");
     writefiles = true;
   }
 	  
