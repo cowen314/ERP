@@ -31,6 +31,7 @@ These instuctions were written specifically for an Ubuntu machine, but the proce
     1. [Download the VTK source code](https://vtk.org/download/)
     1. Run `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory to place VTK makefiles and binaries in)
         1. As of 2021 04 21, an OpenGL implementation might need to be present on the system. [This post](https://stackoverflow.com/questions/31170869/cmake-could-not-find-opengl-in-ubuntu) may be helpful.
+        2. If cmake complains about compiler support, `sudo apt install build-essential` may help
     1. Run `cmake --build vtk-bin` to build VTK 
 1. Download, configure, and build ITK
     1. [Download the ITK source code](https://itk.org/download/)
