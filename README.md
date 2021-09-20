@@ -24,9 +24,9 @@ This tool extracts features from MRI images. The images must be in the MGH/MGZ (
 These instuctions were written specifically for an Ubuntu machine, but the process should be similar on other platforms.
 
 1. Download and install git
-    1. `apt-get install git`
+    1. `apt install git`
 1. Download and install CMake
-    1. `apt-get install cmake`
+    1. `apt install cmake`
 1. Download, configure, and build VTK
     1. [Download the VTK source code](https://vtk.org/download/)
     1. Run `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory to place VTK makefiles and binaries in)
