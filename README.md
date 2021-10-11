@@ -19,14 +19,14 @@ This tool extracts features from MRI images. The images must be in the MGH/MGZ (
 1. `./ERP ../erp-data/bert/ 1 roi.mgh` will extract features from `../erp-data/bert/rawavg.mgh` using `../erp-data/bert/roi.mgh` instead of `../erp-data/bert/aseg.mgh`. Features will be extracted from segment ID 1.
 1. `./ERP ../erp-data/bert/ 1 roi.mgh files` will do everything above, and processed image files will be written to disk.
 
-## Build Instructions
+## ERP Build Instructions
 
-These instuctions were written specifically for an Linux (CentOS7) machine, but the process should be similar on other platforms.
+These instuctions were written specifically for an Linux (Ubuntu) machine, but the process should be similar on other platforms.
 
 1. Download and install git
-    1. `yum install git`
+    1. `apt install git`
 1. Download and install CMake
-    1. `yum install cmake`
+    1. `apt install cmake`
 1. Download, configure, and build VTK
     1. [Download the VTK source code](https://vtk.org/download/)
     1. Run `cmake -S vtk-src -B vtk-bin` to configure VTK (where `vtk-src` is the directory that downloaded VTK source code was placed in, and `vtk-bin` is an arbitrary directory to place VTK makefiles and binaries in)
@@ -44,6 +44,22 @@ These instuctions were written specifically for an Linux (CentOS7) machine, but 
     1. Run `cmake -D ITK_DIR:PATH=/home/cowen/itk-bin -S ERP -B erp-bin/` to configure the ERP tool. `/home/cowen/itk-bin` should be wherever `itk-bin` is (from "*Download, configure, and build ITK*"). 
     1. Run `cmake --build erp-bin` to build the ERP tool. 
 1. Run ERP. See "Using the tool" for more information.
+
+## ERP Manager
+
+ERP Manager (erpman) is a tool that wraps around ERP to provide additional functionality.
+
+## Distribution
+
+ERP and ERP manager can distributed + installed together with the help of a Python script (`setup.py`).
+
+### Building the Distribution From Scratch
+
+1. Build the setup script with `pyinstaller --onefile setup/setup.py`
+2. Build erpman with `pyinstaller --name erpman cli.py`
+3. Build ERP (using the steps above)
+4. Put the ERP executable in the dist directory alongside erpman and the setup executable
+5. Distribute entire dist directory. To install, run the setup executable.
 
 ## Legacy Build/Tooling Instructions
 
