@@ -26,8 +26,8 @@ parser.add_argument("--executable-name", dest="executable_name", help="The name 
 
 subparsers = parser.add_subparsers()
 generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
-generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and a segmentation volume).")
+generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
 generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).")
 generate_parser.set_defaults(func=call_erp)

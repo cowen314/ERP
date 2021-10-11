@@ -62,7 +62,7 @@ class ERP:
 
         errors = []
         for id in segment_ids:
-            segment_output_dir = output_dir / input_dir.parent.name / "segment-" / str(id)
+            segment_output_dir = output_dir / input_dir.parent.name / f"segment-{str(id)}"
             msg, success = self.erp(input_dir, id, segment_output_dir, segmentation_volume)
             if not success:
                 errors.append(f"Segment {id} failed: '{msg}'")
