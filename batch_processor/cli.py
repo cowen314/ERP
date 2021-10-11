@@ -1,10 +1,12 @@
 import argparse
 from core.custom_label_handling import generate_volumes_from_label_batch
 from os import error
-from core.erp import process_batch, process_single
+from core.erp import ERP
 from core.custom_label_handling import generate_volumes_from_label_batch
+from pathlib import Path
 
-def generate(args):
+
+def generate(erp, args):
     segments = args.segment_ids.split(',')
 
     for i in range(len(segments)):
@@ -12,12 +14,11 @@ def generate(args):
             segments[i] = int(segments[i])
         except ValueError:
             exit(f"Could not convert segment ID '{segments[i]}' into an integer")
-    for id in segments:
-        status, passed = process_single(args.input_dir, args.input_dir, id)
-        if passed:
-            print(f"Segment ID {id} processed successfully. Status: {status}")
-        else:
-            print(f"Unable to process segment ID {id}. Status: {status}")
+    status, passed = erp.process_single(Path(args.input_directory), Path(args.input_directory), segments)
+    if passed:
+        print(f"Feature generation completed successfully. Info: {status}")
+    else:
+        print(f"Feature generation failed. Info: {status}")
 
 '''
 Generate features for several patients with a single command
@@ -35,7 +36,7 @@ parser = argparse.ArgumentParser(description="A tool for extracting features fro
 subparsers = parser.add_subparsers()
 generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
 generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
-parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and aseg.mgh).")
+generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and aseg.mgh).")
 generate_parser.set_defaults(func=generate)
 ''' 
 this section contains old stuff that'll probably go
@@ -55,8 +56,9 @@ this section contains old stuff that'll probably go
 # parser.add_argument("output_directory", help="A directory to place ERP outputs into.")
 '''
 
+erp = ERP(erp_exe_name=["echo", "ERP"])  # switch this to "ERP" for production use
 args = parser.parse_args()
-args.func(args)
+args.func(erp, args)
 
 # TODO only run the label batch processing if the user specifies
 # errors = []
