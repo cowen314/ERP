@@ -6,7 +6,7 @@ from core.custom_label_handling import generate_volumes_from_label_batch
 from pathlib import Path
 
 
-def generate(erp, args):
+def call_erp(erp, args):
     segments = args.segment_ids.split(',')
 
     for i in range(len(segments)):
@@ -20,8 +20,21 @@ def generate(erp, args):
     else:
         print(f"Feature generation failed. Info: {status}")
 
+
+parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
+parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable (by default, ERP).")
+
+subparsers = parser.add_subparsers()
+generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
+generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
+generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and a segmentation volume).")
+generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
+generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).")
+generate_parser.set_defaults(func=call_erp)
+
+
 '''
-Generate features for several patients with a single command
+TODO Generate features for several patients with a single command
 
 Inputs:
 - A directory with the MRIs and segmentations of many patients (standard FreeSurfer format)
@@ -31,15 +44,8 @@ Output:
 - CSVs with features
 '''
 
-parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
-
-subparsers = parser.add_subparsers()
-generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
-generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
-generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and aseg.mgh).")
-generate_parser.set_defaults(func=generate)
 ''' 
-this section contains old stuff that'll probably go
+this section contains old stuff that'll probably get deleted
 
 # mode_group = parser.add_mutually_exclusive_group()
 # mode_group.add_argument("segmentation_volume_file", help="Path to FreeSurfer segmentation volume")
@@ -58,7 +64,11 @@ this section contains old stuff that'll probably go
 
 erp = ERP(erp_exe_name=["echo", "ERP"])  # switch this to "ERP" for production use
 args = parser.parse_args()
-args.func(erp, args)
+if hasattr(args, "func"):
+    args.func(erp, args)
+else:
+    exit("A subcommand must be specified. Run this tool with '--help' to display help.")
+
 
 # TODO only run the label batch processing if the user specifies
 # errors = []
