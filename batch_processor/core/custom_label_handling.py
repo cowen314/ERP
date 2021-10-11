@@ -1,7 +1,7 @@
 from pathlib import Path
 import subprocess
 from typing import Tuple, List
-from core.batch_processing import all_patient_dirs
+from core.erp import all_patient_dirs
 
 
 def generate_volumes_from_label_batch(label_file: Path, base_mri_file: Path, patient_directory: Path, new_vol_filename: Path=None, freesurfer_dir: Path="~/freesurfer") -> Tuple[List[str], List[str]]:

@@ -1,5 +1,5 @@
 from pathlib import Path
-from core.batch_processing import process_batch, process_single, move_all_files_with_pattern
+from core.erp import process_batch, process_single, move_all_files_with_pattern
 
 '''Make sure that a single pass works. Change paths as needed.'''
 output, passed = process_single(
