@@ -55,17 +55,11 @@ ERP and ERP manager can distributed + installed together with the help of a Pyth
 
 ### Building the Distribution From Scratch
 
-1. Build the setup script:
-    1. `cd batch_processor/setup`
-    2. `pyinstaller --onefile setup.py`
-2. Build erpman:
-    1. `cd ..`
-    2. `pyinstaller --name erpman cli.py`
+1. Build the setup script with `pyinstaller --onefile setup/setup.py`
+2. Build erpman with `pyinstaller --name erpman cli.py`
 3. Build ERP (using the steps above)
-4. Put the ERP executable, ERP manager distribution directory, and the setup executable in an archive
-5. Distribute
-
-To install, run setup on the target computer.
+4. Put the ERP executable in the dist directory alongside erpman and the setup executable
+5. Distribute entire dist directory. To install, run the setup executable.
 
 ## Legacy Build/Tooling Instructions
 
