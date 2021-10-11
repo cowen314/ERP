@@ -13,7 +13,7 @@ distribution directory like this:
 
 - setup (executable)
 - ERP (executable)
-- erpman.d (distribution directory)
+- erpman (distribution directory)
 
 Run this executable in a shell to kick off the install process
 
