@@ -26,9 +26,11 @@ else:
     EXE_DIR = Path(__file__).parent
 
 # Define install source and targets
-ERPMAN_SOURCE_DIRPATH = Path(EXE_DIR) / "erpman"
+# ERPMAN_SOURCE_DIRPATH = Path(EXE_DIR) / "erpman"
+ERPMAN_EXE_FILEPATH = Path(EXE_DIR) / "erpman"
 ERP_EXE_SOURCE_FILEPATH = Path(EXE_DIR) / "ERP"
-INSTALL_DIRECTORY = Path("/usr/local/bin") / "ERP"
+# INSTALL_DIRECTORY = Path("/usr/local/bin") / "ERP"  # commenting this out for now becauase I'd need to add it to path
+INSTALL_DIRECTORY = Path("/usr/local/bin")
 # INSTALL_DIRECTORY = Path("C:/Users/cowen/Desktop/Temp") / "ERP"
 
 
@@ -99,7 +101,8 @@ if __name__=="__main__":
             clear_success = clear_destination_directory(INSTALL_DIRECTORY)
             erp_move_success = copy_file_to_target(ERP_EXE_SOURCE_FILEPATH, INSTALL_DIRECTORY)
             if erp_move_success:
-                erp_man_move_success = copy_dir_to_target(ERPMAN_SOURCE_DIRPATH, INSTALL_DIRECTORY)
+                # erp_man_move_success = copy_dir_to_target(ERPMAN_SOURCE_DIRPATH, INSTALL_DIRECTORY)
+                erp_man_move_success = copy_file_to_target(ERPMAN_EXE_FILEPATH, INSTALL_DIRECTORY)
         except Exception as e:
             print("Caught exception:")
             traceback.print_exc()

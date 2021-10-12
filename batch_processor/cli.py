@@ -22,7 +22,7 @@ def call_erp(erp, args):
 
 
 parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
-parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable (by default, ERP).")
+parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable.", default="ERP")
 
 subparsers = parser.add_subparsers()
 generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
@@ -53,7 +53,7 @@ this section contains old stuff that'll probably get deleted
 
 # label_group = parser.add_argument_group()
 # label_group.add_argument("--label", help="Path to a label file")
-# label_group.add_argument("--base_image", help="Path to the FreeSurfer image (mgz) that label was drawn on")
+# label_group.add_argument("--base_image", help="Path to the FreeSurfer image (mgh) that label was drawn on")
 
 # auto_seg_group = parser.add_argument_group()
 # auto_seg_group.add_argument("--segmentation_volume_file", help="Path to FreeSurfer segmentation volume")
@@ -62,8 +62,8 @@ this section contains old stuff that'll probably get deleted
 # parser.add_argument("output_directory", help="A directory to place ERP outputs into.")
 '''
 
-erp = ERP(erp_exe_name=["echo", "ERP"])  # switch this to "ERP" for production use
 args = parser.parse_args()
+erp = ERP(erp_exe_name=args.executable_name.split(' '))  # switch this to "ERP" for production use
 if hasattr(args, "func"):
     args.func(erp, args)
 else:
