@@ -39,7 +39,7 @@ class ERP:
             erp_cmd.append("images")
 
         # send the output directly to stdout
-        po = subprocess.run(erp_cmd, shell=True, capture_output=False, cwd=input_dir)  # TODO send output to terminal AND capture?
+        po = subprocess.run(erp_cmd, cwd=input_dir)  # TODO send output to terminal AND capture?
         if po.returncode > 0:
             return f"Error while processing '{str(input_dir.resolve())}'", False
         else:

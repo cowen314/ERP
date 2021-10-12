@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
   {
   	std::cout << "Input a directory to process" << std::endl;
     std::cout << "The image and label files must be in the directory and have the names:" << std::endl;
-    std::cout << "rawavg.mgh and either aseg.mgh (if running all predefined segments) or roi.mgh (if running only a single segment)" << std::endl;
+    std::cout << "rawavg.mgh and aseg.mgh" << std::endl;
     exit(1);
   }
 
