@@ -31,7 +31,7 @@ ERPMAN_EXE_FILEPATH = Path(EXE_DIR) / "erpman"
 ERP_EXE_SOURCE_FILEPATH = Path(EXE_DIR) / "ERP"
 # INSTALL_DIRECTORY = Path("/usr/local/bin") / "ERP"  # commenting this out for now becauase I'd need to add it to path
 INSTALL_DIRECTORY = Path("/usr/local/bin")
-# INSTALL_DIRECTORY = Path("C:/Users/cowen/Desktop/Temp") / "ERP"
+# INSTALL_DIRECTORY = Path("C:/Users/cowen/Desktop/Temp")
 
 
 def clear_destination_directory(destination_dir: Path) -> bool:
@@ -67,7 +67,7 @@ def copy_dir_to_target(source_directory: Path, destination_directory: Path) -> b
     return True  # if no errors, assume that the copy was a success
 
 
-def copy_file_to_target(source_file: Path, destination_directory: Path) -> bool:
+def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o555) -> bool:
     """
 
     Args:
@@ -85,8 +85,22 @@ def copy_file_to_target(source_file: Path, destination_directory: Path) -> bool:
     if not destination_directory.exists():
         destination_directory.mkdir(parents=True, mode=0o777)
     destination_filepath = destination_directory / source_file.name
+    if destination_filepath.exists():
+        if destination_filepath.is_file():
+            if input(f"Found file at ({destination_filepath}). This is likely hanging around from a previous install. OK to "
+                     f"delete this file? (y/N)") == 'y':
+                destination_filepath.unlink()
+            else:
+                return False
+        else:
+            if input(f"Found a directory where a file was expected ({destination_filepath}). OK to delete this directory? "
+                     f"(y/N)") == 'y':
+                shutil.rmtree(destination_filepath)
+            else:
+                return False
     print("Copying to file at path %s" % destination_filepath)
     shutil.copyfile(str(source_file), str(destination_filepath))
+    destination_filepath.chmod(mode)
     return True  # if no errors, assume that the copy was a success
 
 
@@ -94,11 +108,11 @@ if __name__=="__main__":
     print("ERP + erpman setup")
     print("Be sure to run this installer with admin privileges")
     if input("Ready to start installing? (y/N)") == 'y':
-        clear_success = False
+        # clear_success = False
         erp_man_move_success = False
         erp_move_success = False
         try:
-            clear_success = clear_destination_directory(INSTALL_DIRECTORY)
+            # clear_success = clear_destination_directory(INSTALL_DIRECTORY)
             erp_move_success = copy_file_to_target(ERP_EXE_SOURCE_FILEPATH, INSTALL_DIRECTORY)
             if erp_move_success:
                 # erp_man_move_success = copy_dir_to_target(ERPMAN_SOURCE_DIRPATH, INSTALL_DIRECTORY)
@@ -106,7 +120,7 @@ if __name__=="__main__":
         except Exception as e:
             print("Caught exception:")
             traceback.print_exc()
-        if erp_man_move_success and erp_move_success and clear_success:
+        if erp_man_move_success and erp_move_success:
             print("Installation successful!")
         else:
             print("Installation failed!")

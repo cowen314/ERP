@@ -5,7 +5,6 @@ from core.erp import ERP
 from core.custom_label_handling import generate_volumes_from_label_batch
 from pathlib import Path
 
-
 def call_erp(erp, args):
     segments = args.segment_ids.split(',')
 
@@ -67,7 +66,7 @@ erp = ERP(erp_exe_name=args.executable_name.split(' '))  # switch this to "ERP" 
 if hasattr(args, "func"):
     args.func(erp, args)
 else:
-    exit("A subcommand must be specified. Run this tool with '--help' to display help.")
+    print("A subcommand must be specified. Run this tool with '--help' to display help.")
 
 
 # TODO only run the label batch processing if the user specifies
