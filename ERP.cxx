@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 
   if (argc > 3) // use alternate aseg name
   {
-    printf("Found at least 3 arguments. Will use the third argument ('%s') as the name for the aseg file (instead of the default 'aseg.mgh'\n", argv[3]);
+    printf("Found at least 3 arguments. Will use the third argument ('%s') as the name for the aseg file (instead of the default, 'aseg.mgh')\n", argv[3]);
     inputLabels = inputDirectory + argv[3];
   }
   else
