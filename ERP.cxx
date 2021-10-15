@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
   if (argc > 2) // assume that the user wants to process a single arbitrarily defined region of interest
   { 
     processSingleAbritraryRoi = true;
-    printf("Found at least two arguments. The application will assume that the second argument is a segment ID to process.\n");
+    printf("Found at least 2 arguments. The application will assume that the second argument is a segment ID to process.\n");
     roiSegmentId = atoi(argv[2]);
     printf("Generating features for segmentID=%d.\n", roiSegmentId);
     labelNames.reserve(1); //storage for 1 label
@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 
   if (argc > 3) // use alternate aseg name
   {
-    printf("Found at least 3 arguments. Will use the 3rd argument ('%s') as the name for the aseg file (instead of the default 'aseg.mgh'\n", argv[3]);
+    printf("Found at least 3 arguments. Will use the third argument ('%s') as the name for the aseg file (instead of the default 'aseg.mgh'\n", argv[3]);
     inputLabels = inputDirectory + argv[3];
   }
   else
