@@ -5,6 +5,7 @@ from core.erp import ERP
 from core.custom_label_handling import generate_volumes_from_label_batch
 from pathlib import Path
 
+
 def call_erp(erp, args):
     segments = args.segment_ids.split(',')
 
@@ -13,11 +14,12 @@ def call_erp(erp, args):
             segments[i] = int(segments[i])
         except ValueError:
             exit(f"Could not convert segment ID '{segments[i]}' into an integer")
-    status, passed = erp.process_single(Path(args.input_directory), Path(args.input_directory), segments)
+    statuses, passed = erp.process_single(Path(args.input_directory), Path(args.input_directory), segments)
+    status_str = "\n > ".join(statuses)
     if passed:
-        print(f"Feature generation completed successfully. Info: {status}")
+        print(f"Operation succeeded\n > {status_str}")
     else:
-        print(f"Feature generation failed. Info: {status}")
+        print(f"Operation failed\n > {status_str}")
 
 
 parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")

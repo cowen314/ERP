@@ -8,7 +8,7 @@ class ERP:
     def __init__(self, erp_exe_name:Union[List[str], str]="ERP"):
         self._erp_exe_name = erp_exe_name
 
-    def erp(self, input_dir: Path, segment_id: int, output_dir: Path=None, segmentation_file: str= "aseg.mgh", write_images: bool=False) -> Tuple[str, bool]:
+    def _erp_executable(self, input_dir: Path, segment_id: int, output_dir: Path=None, segmentation_file: str= "aseg.mgh", write_images: bool=False) -> Tuple[str, bool]:
         """call the ERP executable via command line, processing a single ROI / segment ID
 
         This is meant to be a Python "binding" around the ERP tool.
@@ -38,17 +38,23 @@ class ERP:
         if write_images:
             erp_cmd.append("images")
 
-        # send the output directly to stdout
-        po = subprocess.run(erp_cmd, cwd=input_dir)  # TODO send output to terminal AND capture?
+        # send the output directly to stdout so that user can view feedback live
+        try:
+            po = subprocess.run(erp_cmd, cwd=input_dir)  # TODO capture output, reformat, then pass back up to be displayed live?
+        except FileNotFoundError:
+            print("Unable to run ERP without shell option, trying again with shell option")
+            po = subprocess.run(erp_cmd, shell=True, cwd=input_dir)
         if po.returncode > 0:
-            return f"Error while processing '{str(input_dir.resolve())}'", False
+            return f"Error while processing '{str(input_dir.resolve())}', with segment ID {segment_id} and segmentation" \
+                   f" file '{segmentation_file}'", False
         else:
             # the ERP tool worked as expected
             if output_dir:
                 move_all_files_with_pattern(input_dir, output_dir, "*_features.csv")
-            return f"Processed '{str(input_dir.resolve())}' successfully", True
+            return f"Processed '{str(input_dir.resolve())}', with segment ID {segment_id} and segmentation" \
+                   f" file '{segmentation_file}' successfully", True
 
-    def process_single(self, input_dir: Path, output_dir: Path, segment_ids: List[int], segmentation_volume: str="aseg.mgh") -> Tuple[str, bool]:
+    def process_single(self, input_dir: Path, output_dir: Path, segment_ids: List[int], segmentation_volume: str="aseg.mgh") -> Tuple[List[str], bool]:
         """process a single patient
 
         Args:
@@ -57,20 +63,19 @@ class ERP:
             segment_ids (List[int]): the segment ids to process with ERP
 
         Returns:
-            str, bool: status message, status bool (True = pass, False = fail)
+            Tuple[List[str], bool]: [list of messages, a bool indicating whether ERP ran successfully or not (true = no
+             errors, false = errors)]
         """
 
-        errors = []
+        messages = []
+        success_overall = True
         for id in segment_ids:
             segment_output_dir = output_dir / input_dir.parent.name / f"segment-{str(id)}"
-            msg, success = self.erp(input_dir, id, segment_output_dir, segmentation_volume)
+            msg, success = self._erp_executable(input_dir, id, segment_output_dir, segmentation_volume)
+            messages.append(msg)
             if not success:
-                errors.append(f"Segment {id} failed: '{msg}'")
-        # FIXME if this tools needs to grow, pass a list of errors out of this function, rather than a formatted string. Keep the formatting and the ERP-call logic separate.
-        if len(errors) > 0:
-            errors_formatted = '\n\t'.join(errors)
-            return f"Some failures occurred while processing: \n\t{errors_formatted}", False
-        return "Processed successfully", True
+                success_overall = False
+        return messages, success_overall
 
     def process_batch(self, subjects_directory: Path, output_directory: Path, segment_ids: List[int], segmentation_volume_rel_path: str) -> Tuple[List[str], List[str]]:
         """process a batch of patients all at once
