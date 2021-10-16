@@ -6,7 +6,7 @@ from core.custom_label_handling import generate_volumes_from_label_batch
 from pathlib import Path
 
 
-def call_erp(erp, args):
+def _erp_process_single(erp, args):
     segments = args.segment_ids.split(',')
 
     for i in range(len(segments)):
@@ -26,12 +26,12 @@ parser = argparse.ArgumentParser(description="A tool for extracting features fro
 parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable.", default="ERP")
 
 subparsers = parser.add_subparsers()
-generate_parser = subparsers.add_parser("generate", help="Generates features for any number of segment IDs")
+generate_parser = subparsers.add_parser("process-single", help="Generates features for any number of segment IDs on a single patient")
 generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and a segmentation volume).")
 generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 # generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
 generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).")
-generate_parser.set_defaults(func=call_erp)
+generate_parser.set_defaults(func=_erp_process_single)
 
 
 '''
@@ -64,12 +64,15 @@ this section contains old stuff that'll probably get deleted
 '''
 
 args = parser.parse_args()
-erp = ERP(erp_exe_name=args.executable_name.split(' '))  # switch this to "ERP" for production use
+erp = ERP(erp_exe_name=args.executable_name.split(' '))
 if hasattr(args, "func"):
     args.func(erp, args)
 else:
     print("A subcommand must be specified. Run this tool with '--help' to display help.")
 
+
+# TODO process batch
+# TODO generate a segmentation volume from a label file, then use that
 
 # TODO only run the label batch processing if the user specifies
 # errors = []

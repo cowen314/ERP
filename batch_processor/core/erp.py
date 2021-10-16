@@ -2,6 +2,7 @@ from os import error
 import subprocess
 from pathlib import Path
 from typing import List, Union, Tuple
+from sys import platform
 
 
 class ERP:
@@ -32,7 +33,8 @@ class ERP:
             erp_cmd = [self._erp_exe_name]
         else:
             raise TypeError("EXE name must be a list or a string")
-        erp_cmd.append(str(input_dir))
+        slash = '\\' if platform.startswith('win32') or platform.startswith('cygwin') else '/'
+        erp_cmd.append(str(input_dir.resolve())+slash)  # ERP does not handle paths well, need to make sure path ends with slash
         erp_cmd.append(str(segment_id))
         erp_cmd.append(segmentation_file)
         if write_images:
