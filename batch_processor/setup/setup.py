@@ -5,7 +5,8 @@ import subprocess
 import traceback
 import sys
 import argparse
-
+from rich.traceback import install
+install(show_locals=True)
 
 """
 
@@ -41,6 +42,18 @@ INSTALL_DIRECTORY = Path("/usr/local/bin")
 # INSTALL_DIRECTORY = Path("C:/Users/cowen/Desktop/Temp")
 
 
+def check_for_expected_response(prompt_message: str, expected_response: str=None, active: bool=True) -> bool:
+    """If active, solicit user input. Return True if the user provides the expected response."""
+    if active:
+        response = input(prompt_message)
+        if expected_response:
+            return response == expected_response
+        else:
+            return True
+    else:
+        return True
+
+
 def clear_destination_directory(destination_dir: Path) -> bool:
     if destination_dir.exists():
         if len(list(destination_dir.glob("*"))) > 0:
@@ -74,7 +87,7 @@ def copy_dir_to_target(source_directory: Path, destination_directory: Path) -> b
     return True  # if no errors, assume that the copy was a success
 
 
-def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o555) -> bool:
+def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o555, prompts: bool=True) -> bool:
     """
 
     Args:
@@ -94,14 +107,14 @@ def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o5
     destination_filepath = destination_directory / source_file.name
     if destination_filepath.exists():
         if destination_filepath.is_file():
-            if input(f"Found file at ({destination_filepath}). This is likely hanging around from a previous install. OK to "
-                     f"delete this file? (y/N)") == 'y':
+            if check_for_expected_response(f"Found file at ({destination_filepath}). This is likely hanging around from a previous install. OK to "
+                     f"delete this file? (y/N)", expected_response='y', active=args.force):
                 destination_filepath.unlink()
             else:
                 return False
         else:
-            if input(f"Found a directory where a file was expected ({destination_filepath}). OK to delete this directory? "
-                     f"(y/N)") == 'y':
+            if check_for_expected_response(f"Found a directory where a file was expected ({destination_filepath}). OK to delete this directory? "
+                     f"(y/N)", expected_response='y', active=args.force):
                 shutil.rmtree(destination_filepath)
             else:
                 return False
@@ -114,7 +127,7 @@ def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o5
 if __name__=="__main__":
     print("ERP + erpman setup")
     print("Be sure to run this installer with admin privileges")
-    if input("Ready to start installing? (y/N)") == 'y' or args.force:
+    if check_for_expected_response("Ready to start installing? (y/N)", expected_response='y', active=args.force):
         # clear_success = False
         erp_man_move_success = False
         erp_move_success = False
@@ -131,5 +144,4 @@ if __name__=="__main__":
             print("Installation successful!")
         else:
             print("Installation failed!")
-        if not args.force:
-            input("Press enter to exit")
+        check_for_expected_response("Press enter to exit", expected_response='y', active=args.force)

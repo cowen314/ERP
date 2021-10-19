@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import List, Union, Tuple
 from sys import platform
 from rich import print
+from rich.traceback import install
+install(show_locals=True)
 
 
 class ERP:
