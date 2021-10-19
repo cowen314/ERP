@@ -47,6 +47,16 @@ jobs:
       run: |
         touch ./batch_processor/dist/ERP  # mock the ERP executable; we won't call it in this script
         ./batch_processor/dist/setup --force
+        rm ./batch_processor/dist/ERP
     - name: Run erpman
       run: |
         erpman --executable-name "echo ERP" process-single . 1,2,3
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # name: # optional, default is artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./batch_processor/dist
+        # The desired behavior if no files are found using the provided path.
+        if-no-files-found: error
+        retention-days: 3
