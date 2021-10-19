@@ -4,6 +4,8 @@ import shutil
 import subprocess
 import traceback
 import sys
+import argparse
+
 
 """
 
@@ -14,11 +16,16 @@ distribution directory like this:
 
 - setup (executable)
 - ERP (executable)
-- erpman (distribution directory)
+- erpman (executable)
 
 Run this executable in a shell to kick off the install process
 
 """
+
+parser = argparse.ArgumentParser(description="Setup for erpman")
+parser.add_argument("-f", "--force", help="Force the setup to run silently", action="store_true")
+args = parser.parse_args()
+
 
 if getattr(sys, 'frozen', False):  # if in the context of a PyInstaller bundled application
     EXE_DIR = Path(sys.executable).parent
@@ -107,7 +114,7 @@ def copy_file_to_target(source_file: Path, destination_directory: Path, mode=0o5
 if __name__=="__main__":
     print("ERP + erpman setup")
     print("Be sure to run this installer with admin privileges")
-    if input("Ready to start installing? (y/N)") == 'y':
+    if input("Ready to start installing? (y/N)") == 'y' or args.force:
         # clear_success = False
         erp_man_move_success = False
         erp_move_success = False
@@ -124,4 +131,5 @@ if __name__=="__main__":
             print("Installation successful!")
         else:
             print("Installation failed!")
-        input("Press enter to exit")
+        if not args.force:
+            input("Press enter to exit")
