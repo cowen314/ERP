@@ -24,7 +24,7 @@ Run this executable in a shell to kick off the install process
 """
 
 parser = argparse.ArgumentParser(description="Setup for erpman")
-parser.add_argument("-f", "--force", help="Force the setup to run silently", action="store_true")
+parser.add_argument("-f", "--force", help="Force the setup to run silently", action="store_false")
 args = parser.parse_args()
 
 
