@@ -4,6 +4,7 @@ from os import error
 from core.erp import ERP
 from core.custom_label_handling import generate_volumes_from_label_batch
 from pathlib import Path
+from rich import print
 
 
 def _erp_process_single(erp, args):

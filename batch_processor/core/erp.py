@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 from typing import List, Union, Tuple
 from sys import platform
+from rich import print
 
 
 class ERP:
