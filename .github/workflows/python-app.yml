@@ -38,9 +38,15 @@ jobs:
     - name: Build erpman
       run: |
         cd batch_processor
-        pwd
         pyinstaller --onefile --name erpman cli.py
     - name: Build erpman setup
       run: |
         cd batch_processor
         pyinstaller --onefile setup/setup.py
+    - name: Install erpman
+      run: |
+        touch ./batch_processor/dist/ERP  # mock the ERP executable; we won't call it in this script
+        ./batch_processor/dist/setup --force
+    - name: Run erpman
+      run: |
+        erpman --executable-name "echo ERP" process-single . 1,2,3
