@@ -9,7 +9,7 @@ from rich.traceback import install
 install(show_locals=True)
 
 
-def _erp_process_single(erp, args):
+def _erp_process_single(erp: ERP, args):
     segments = args.segment_ids.split(',')
 
     for i in range(len(segments)):
@@ -17,7 +17,9 @@ def _erp_process_single(erp, args):
             segments[i] = int(segments[i])
         except ValueError:
             exit(f"Could not convert segment ID '{segments[i]}' into an integer")
-    statuses, passed = erp.process_single(Path(args.input_directory), Path(args.input_directory), segments)
+     
+    statuses, passed = erp.process_single(Path(args.input_directory), Path(args.input_directory), segments, segmentation_volume=args.segmentation_volume)
+
     status_str = "\n > ".join(statuses)
     if passed:
         print(f"Operation succeeded\n > {status_str}")
@@ -33,7 +35,7 @@ generate_parser = subparsers.add_parser("process-single", help="Generates featur
 generate_parser.add_argument("input_directory", help="A directory with patient data (rawavg.mgh and a segmentation volume).")
 generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 # generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
-generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).")
+generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).", default='aseg.mgh')
 generate_parser.set_defaults(func=_erp_process_single)
 
 
@@ -69,6 +71,7 @@ this section contains old stuff that'll probably get deleted
 args = parser.parse_args()
 erp = ERP(erp_exe_name=args.executable_name.split(' '))
 if hasattr(args, "func"):
+    print(args.segmentation_volume)
     args.func(erp, args)
 else:
     print("A subcommand must be specified. Run this tool with '--help' to display help.")
