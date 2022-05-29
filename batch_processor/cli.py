@@ -27,6 +27,10 @@ def _erp_process_single(erp: ERP, args):
         print(f"Operation failed\n > {status_str}")
 
 
+def _erp_process_multiple(erp: ERP, args):
+    # TODO
+    raise NotImplementedError
+
 parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
 parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable.", default="ERP")
 
@@ -37,6 +41,13 @@ generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to proc
 # generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
 generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).", default='aseg.mgh')
 generate_parser.set_defaults(func=_erp_process_single)
+
+generate_parser = subparsers.add_parser("process-multiple", help="Generates features for any number of segment IDs on multiple patients")
+generate_parser.add_argument("freesurfer_patients_directory", help="A directory with patient data (which contains several subfolders; each subfolder should contain an /mri folder with a rawavg.mgh and a segmentation volume).")
+generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
+# generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
+generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).", default='aseg.mgh')
+generate_parser.set_defaults(func=_erp_process_multiple)
 
 
 '''
