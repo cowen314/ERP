@@ -28,8 +28,23 @@ def _erp_process_single(erp: ERP, args):
 
 
 def _erp_process_multiple(erp: ERP, args):
-    # TODO
-    raise NotImplementedError
+    segments = args.segment_ids.split(',')
+
+    for i in range(len(segments)):
+        try:
+            segments[i] = int(segments[i])
+        except ValueError:
+            exit(f"Could not convert segment ID '{segments[i]}' into an integer")
+
+    output_directory: Path = args.patient_directory / "erpman-outputs"
+    output_directory.touch(exist_ok=True)
+    statuses, errors = erp.process_batch(Path(args.patient_directory), Path(args.patient_directory), segments, segmentation_volume_rel_path=args.segmentation_volume)
+
+    status_str = "\n > ".join(statuses)
+    if len(errors) == 0:
+        print(f"Operation succeeded\n > {status_str}")
+    else:
+        print(f"Operation failed\n > {status_str}")
 
 parser = argparse.ArgumentParser(description="A tool for extracting features from batches of patients.")
 parser.add_argument("--executable-name", dest="executable_name", help="The name of the ERP executable.", default="ERP")
