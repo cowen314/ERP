@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "ms-python.python",
+		// Start all terminals at the workspace root
+		"terminal.integrated.splitCwd": "workspaceRoot",
+		// Dock the toolbar at the bottom of the window
+		"debug.toolBarLocation": "docked",
+		// Use pretty colors
+		"editor.bracketPairColorization.enabled": true,
+		// Python-specific settings
+		"python.languageServer": "Pylance",
+		"python.analysis.diagnosticMode": "workspace",
+		"python.formatting.provider": "yapf",
+		"python.linting.enabled": true,
+		"python.analysis.typeCheckingMode": "basic",
+		"python.linting.pycodestyleEnabled": true,
+	},
+	"launch": {
+		"configurations": [
+			{
+				"name": "erpman - test 'process-multiple'",
+				"type": "python",
+				"request": "launch",
+				"args": [
+					"--executable-name", "echo ERP",
+					"process-multiple",
+					".",
+					"1,2,3"
+				],
+				"console": "integratedTerminal"
+			}
+		],
+		"compounds": []
+	}
+}

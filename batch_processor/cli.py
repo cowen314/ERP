@@ -1,4 +1,6 @@
 import argparse
+from datetime import datetime
+
 from core.custom_label_handling import generate_volumes_from_label_batch
 from os import error
 from core.erp import ERP
@@ -36,9 +38,16 @@ def _erp_process_multiple(erp: ERP, args):
         except ValueError:
             exit(f"Could not convert segment ID '{segments[i]}' into an integer")
 
-    output_directory: Path = args.patient_directory / "erpman-outputs"
-    output_directory.touch(exist_ok=True)
-    statuses, errors = erp.process_batch(Path(args.patient_directory), Path(args.patient_directory), segments, segmentation_volume_rel_path=args.segmentation_volume)
+    output_directory: Path = Path(args.freesurfer_patient_directory) / "erpman-outputs"
+    output_directory.mkdir(mode=0o666, exist_ok=True)
+    batch_directory = output_directory / datetime.now().strftime("%Y%m%d-%H%M%S")
+    batch_directory.mkdir(mode=0o666, exist_ok=False)
+    statuses, errors = erp.process_batch(
+        Path(args.freesurfer_patient_directory),
+        batch_directory,
+        segments,
+        segmentation_volume_rel_path=args.segmentation_volume
+    )
 
     status_str = "\n > ".join(statuses)
     if len(errors) == 0:
@@ -58,7 +67,7 @@ generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume"
 generate_parser.set_defaults(func=_erp_process_single)
 
 generate_parser = subparsers.add_parser("process-multiple", help="Generates features for any number of segment IDs on multiple patients")
-generate_parser.add_argument("freesurfer_patients_directory", help="A directory with patient data (which contains several subfolders; each subfolder should contain an /mri folder with a rawavg.mgh and a segmentation volume).")
+generate_parser.add_argument("freesurfer_patient_directory", help="A directory with patient data (which contains several subfolders; each subfolder should contain an /mri folder with a rawavg.mgh and a segmentation volume).")
 generate_parser.add_argument("segment_ids", help="FreeSurfer segment IDs to process. Provide as a comma separated list e.g. '10,17,53,49'.")
 # generate_parser.add_argument("--output-directory", dest="output_directory", help="A directory to move feature CSVs to after ERP completes.")
 generate_parser.add_argument("--segmentation-volume", dest="segmentation_volume", help="Name of the segmentation volume to use ('aseg.mgh' by default).", default='aseg.mgh')
