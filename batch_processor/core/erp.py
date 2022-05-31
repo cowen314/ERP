@@ -1,7 +1,7 @@
 from os import error
 import subprocess
 from pathlib import Path
-from typing import List, Union, Tuple
+from typing import List, Optional, Union, Tuple
 from sys import platform
 from rich import print
 from rich.traceback import install
@@ -17,7 +17,7 @@ class ERP:
     def _erp_executable(self,
                         input_dir: Path,
                         segment_id: int,
-                        output_dir: Path = None,
+                        output_dir: Optional[Path] = None,
                         segmentation_file: str = "aseg.mgh",
                         write_images: bool = False) -> Tuple[str, bool]:
         """call the ERP executable via command line, processing a single ROI / segment ID
@@ -71,7 +71,7 @@ class ERP:
             if output_dir:
                 move_all_files_with_pattern(input_dir, output_dir,
                                             "*_features.csv")
-            return f"Processed '{str(input_dir.resolve())}', with segment ID {segment_id} and segmentation" \
+            return f"Processed '{str(input_dir)}', with segment ID {segment_id} and segmentation" \
                    f" file '{segmentation_file}' successfully", True
 
     def process_single(
@@ -105,29 +105,37 @@ class ERP:
         return messages, success_overall
 
     def process_batch(
-            self, subjects_directory: Path, output_directory: Path,
+            self,
+            subjects_directory: Path,
+            output_directory: Path,
             segment_ids: List[int],
-            segmentation_volume_rel_path: str) -> Tuple[List[str], List[str]]:
+            segmentation_volume: str = "aseg.mgh"
+    ) -> Tuple[List[str], List[str]]:
         """process a batch of patients all at once
 
         Args:
             subjects_directory (Path): directory with a bunch of subdirectories, one subdirectory for each subject
             output_directory (Path): directory for the ERP outputs
             segment_ids (List[int]): the segment IDs to generate features for
-            segmentation_volume_rel_path (str): a relative path to the segmentation volume (relative to the base directory for each patient)
+            segmentation_volume (str): the filename of the segmentation volume (expected in the base directory for each patient)
 
         Returns:
             List[str], List[str]: Results (1 item for each subject), errors (1 item for each subject that ERP did not successfully process)
         """
         errors = []
         results = []
-        for patient_dir in all_patient_dirs(
-                subjects_directory):  # TODO test generator
-            msg, success = self.process_single(
-                patient_dir / "mri", output_directory, segment_ids,
-                patient_dir / segmentation_volume_rel_path)
+        for patient_dir in all_patient_dirs(subjects_directory):
+            mri_directory = patient_dir / "mri"
+            if not mri_directory.exists():
+                print(
+                    f"Could not find a 'mri' directory within subfolder '{patient_dir}', skipping"
+                )
+                continue
+            msg, success = self.process_single(patient_dir / "mri",
+                                               output_directory, segment_ids,
+                                               segmentation_volume)
+            print(f"Processed {patient_dir}" + "\n\t" + "\n\t".join(msg))
             result = f"Processed {patient_dir}, {msg}"
-            print(result)
             results += result
             if not success:
                 errors += msg
@@ -149,5 +157,5 @@ def move_all_files_with_pattern(original_dir: Path, new_dir: Path,
 # TODO write a generator that returns a sequence of folders in the patient directory
 def all_patient_dirs(base: Path):
     for item in base.glob("*"):
-        if item.is_dir:
+        if item.is_dir():
             yield item

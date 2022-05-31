@@ -47,7 +47,7 @@ def _erp_process_multiple(erp: ERP, args):
                 f"Could not convert segment ID '{segments[i]}' into an integer"
             )
 
-    output_directory: Path = Path(
+    output_directory = Path(
         args.freesurfer_patient_directory) / "erpman-outputs"
     output_directory.mkdir(mode=0o666, exist_ok=True)
     batch_directory = output_directory / datetime.now().strftime(
@@ -57,13 +57,14 @@ def _erp_process_multiple(erp: ERP, args):
         Path(args.freesurfer_patient_directory),
         batch_directory,
         segments,
-        segmentation_volume_rel_path=args.segmentation_volume)
+        segmentation_volume=args.segmentation_volume)
 
-    status_str = "\n > ".join(statuses)
-    if len(errors) == 0:
-        print(f"Operation succeeded\n > {status_str}")
-    else:
-        print(f"Operation failed\n > {status_str}")
+    # for now, just let the batch method write to the output
+    # status_str = "\n > ".join(statuses)
+    # if len(errors) == 0:
+    #     print(f"Operation succeeded\n > {status_str}")
+    # else:
+    #     print(f"Operation failed\n > {status_str}")
 
 
 parser = argparse.ArgumentParser(
