@@ -1,0 +1,62 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "ms-python.python",
+		// Start all terminals at the workspace root
+		"terminal.integrated.splitCwd": "workspaceRoot",
+		// Dock the toolbar at the bottom of the window
+		"debug.toolBarLocation": "docked",
+		// Use pretty colors
+		"editor.bracketPairColorization.enabled": true,
+		// Python-specific settings
+		"python.languageServer": "Pylance",
+		"python.analysis.diagnosticMode": "workspace",
+		"python.formatting.provider": "yapf",
+		"python.linting.enabled": true,
+		"python.analysis.typeCheckingMode": "basic",
+		"python.linting.pycodestyleEnabled": true,
+		"python.linting.pycodestyleCategorySeverity.W": "Information",
+		"python.linting.pycodestyleCategorySeverity.E": "Warning"
+	},
+	"launch": {
+		"configurations": [
+			{
+				"name":"Run current file",
+				"type": "python",
+				"program": "${file}",
+				"request": "launch"
+			},
+			{
+				"name": "erpman - test 'process-multiple' (echo commands only)",
+				"type": "python",
+				"program": "./cli.py",
+				"request": "launch",
+				"args": [
+					"--executable-name", "echo ERP",
+					"process-multiple",
+					"./test",
+					"1,2,3"
+				],
+				"console": "integratedTerminal"
+			},
+			{
+				"name": "erpman - test 'process-multiple' (run commands)",
+				"type": "python",
+				"program": "./cli.py",
+				"request": "launch",
+				"args": [
+					"process-multiple",
+					"./test",
+					"17"
+				],
+				"console": "integratedTerminal"
+			}
+		],
+		"compounds": []
+	}
+}
