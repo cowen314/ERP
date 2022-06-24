@@ -56,12 +56,17 @@ ERP and ERP manager can distributed + installed together with the help of a Pyth
 ### Building the Distribution From Scratch
 
 1. Clone the repository (e.g. `git clone git@github.com:cowen314/ERP.git`)
-1. Switch to erpman directory with `cd batch_processor`
-1. Build the setup script with `pyinstaller --onefile setup/setup.py`
-2. Build erpman with `pyinstaller --onefile --name erpman cli.py`
-3. Build ERP (using the steps above)
-4. Put the ERP executable in the dist directory alongside erpman and the setup executable
-5. Distribute entire dist directory. To install, run the setup executable.
+2. Create a new virtual environment with `python -m venv venv`
+3. Activate the virtual environment with `source ./venv/bin/activate`
+4. Install all required python packages with `pip -r requirements.txt`
+5. Switch to erpman directory with `cd batch_processor`
+6. Build the setup script with `pyinstaller --onefile setup/setup.py`
+7. Build erpman with `pyinstaller --onefile --name erpman cli.py`
+8. Build ERP (using the steps above)
+9. Put the ERP executable in the dist directory alongside erpman and the setup executable
+10. Distribute entire dist directory. To install, run the setup executable.
+
+To officially release a new version, compress the contents of the dist directory (ERP, erpman, and setup; `cd dist` then `tar -czvf erpman-x.y.z.tar.gz *`), then upload to a new GitHub release.
 
 ## Legacy Build/Tooling Instructions
 
