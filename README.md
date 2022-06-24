@@ -68,6 +68,18 @@ ERP and ERP manager can distributed + installed together with the help of a Pyth
 
 To officially release a new version, compress the contents of the dist directory (ERP, erpman, and setup; `cd dist` then `tar -czvf erpman-x.y.z.tar.gz *`), then upload to a new GitHub release.
 
+## Common Problems
+
+### Exec format error
+
+#### Description
+
+`cannot execute binary file: Exec format error` when trying to run the executable
+
+#### Possible solution
+
+Make sure the executable was built on a similar platform as the one you're running it on. As of 2022 06 23, Ubuntu 18.04 is the recommended distribution for building and running these applications.
+
 ## Legacy Build/Tooling Instructions
 
 #### CMake [![versioncmake](https://img.shields.io/badge/CMake-3.15.3-red.svg?style=flat&logo=CMake)](https://cmake.org/)
