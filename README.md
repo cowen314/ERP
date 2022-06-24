@@ -55,6 +55,7 @@ ERP and ERP manager can distributed + installed together with the help of a Pyth
 
 ### Building the Distribution From Scratch
 
+1. Clone the repository (e.g. `git clone git@github.com:cowen314/ERP.git`)
 1. Switch to erpman directory with `cd batch_processor`
 1. Build the setup script with `pyinstaller --onefile setup/setup.py`
 2. Build erpman with `pyinstaller --onefile --name erpman cli.py`
